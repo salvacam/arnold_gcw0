@@ -264,14 +264,14 @@ typedef struct {
 // Exit
 
 MENUITEM gui_MainMenuItems[] = {
-	{(const char *)"Zoom level: ", &gui_Zoom, 3, (const char **)&zoom_Values, &menu_ChangeRatio},
+//	{(const char *)"Zoom level: ", &gui_Zoom, 3, (const char **)&zoom_Values, &menu_ChangeRatio},
 	{(const char *)"Frameskip: ", &gui_Frameskip, 5, 0, &menu_ChangeFrameskip},
 	{(const char *)"CRTC choice: ", &gui_CRTC, 4, (const char **)&CRTC_Types, &menu_ChangeCRTC},
 	{(const char *)"Realspeed: ", &gui_RealSpeed, 1, (const char **)&gui_YesNo, &menu_ChangeRealSpeed},
 	{(const char *)"Exit", 0, 0, 0, &menu_Exit}
 };
 
-MENU gui_MainMenu = { 5, 0, (MENUITEM *)&gui_MainMenuItems };
+MENU gui_MainMenu = { 4, 0, (MENUITEM *)&gui_MainMenuItems };
 
 #define color16(red, green, blue) ((red << 11) | (green << 5) | blue)
 

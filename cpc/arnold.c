@@ -24,9 +24,6 @@
 #include "z80/z80.h"
 #include "fdd.h"
 
-#define FRAME_SKIP_MIN	0
-#define FRAME_SKIP_MAX	10
-
 #ifndef CPC_NODEBUGGER
 #include "debugger/gdebug.h"
 #endif

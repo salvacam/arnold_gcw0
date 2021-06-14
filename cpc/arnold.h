@@ -23,6 +23,9 @@
 #include "cpcglob.h"
 
 /* frame skip value */
+#define FRAME_SKIP_MIN	0
+#define FRAME_SKIP_MAX	10
+
 static int FrameSkip = FRAME_SKIP_MIN;
 
 void	CPCEmulation_Finish(void);
