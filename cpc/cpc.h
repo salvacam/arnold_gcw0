@@ -63,6 +63,8 @@ enum
 #include "ramrom.h"
 #include "magnum.h"
 
+static int CurrentCRTCType;
+
 #define NUM_CRTC_TYPES 5
 
 #define PSG_CLOCK_FREQUENCY 1000000
@@ -500,5 +502,6 @@ void	Amstrad_RamExpansion_DeInstall(void);
 
 BOOL Keyboard_HasBeenScanned();
 void Keyboard_ResetHasBeenScanned();
+
 
 #endif

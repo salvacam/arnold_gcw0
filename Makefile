@@ -1,6 +1,7 @@
 # Makefile for Arnold
 
-CC = gcc
+#CC = gcc
+CC = /opt/trimui-toolchain/bin/arm-buildroot-linux-gnueabi-gcc
 BIND = $(CC)
 #   CFLAGS    flags for C compile
 #   LFLAGS1   flags after output file spec, before obj file list
@@ -14,32 +15,35 @@ X11LIB = -L
 #X11INC = -I/usr/X11R6/include -I/usr/openwin/share/include
 #X11LIB = -L/usr/X11R6/lib -L/usr/openwin/lib
 
-X11LIBS = $(X11LIB) -lX11 -lXext
+#X11LIBS = $(X11LIB) -lX11 -lXext
+
+#X11LIBS = $(X11LIB) -lX11
 
 # Comment to following two lines to disable GTK+
-GTKINC = -I/usr/include/gtk-2.0 -I/usr/lib/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/pango-1.0 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include  
-GTKLIB = -lgtk-x11-2.0 -lgdk-x11-2.0 -latk-1.0 -lgdk_pixbuf-2.0 -lm -lpangocairo-1.0 -lpango-1.0 -lcairo -lgobject-2.0 -lgmodule-2.0 -ldl -lglib-2.0  
+#GTKINC = -I/usr/include/gtk-2.0 -I/usr/lib/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/pango-1.0 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include  
+#GTKLIB = -lgtk-x11-2.0 -lgdk-x11-2.0 -latk-1.0 -lgdk_pixbuf-2.0 -lm -lpangocairo-1.0 -lpango-1.0 -lcairo -lgobject-2.0 -lgmodule-2.0 -ldl -lglib-2.0  
 
 # Comment to following two lines to disable SDL
-SDLINC = -I/usr/include/SDL -D_REENTRANT
-SDLLIB = -L/usr/lib -lSDL -lpthread
+SDLINC = -D_REENTRANT
+#SDLLIB = -L/usr/lib -lSDL -lpthread
+SDLLIB = -lSDL -lmad
 
 # Comment to following two lines to disable ALSA
 ALSAINC = 
-ALSALIB =  -lasound -lm -ldl -lpthread
-
+ALSALIB =  -lasound -lm
 # Comment to following two lines to disable PULSE
 PULSEINC = 
 PULSELIB = 
 
 #-Wall for max warnings!
-CFLAGS =  -pg -O2 -DCPC_NODEBUGGER $(SDLINC) $(ALSAINC) $(PULSEINC) -DPACKAGE_NAME=\"\" -DPACKAGE_TARNAME=\"\" -DPACKAGE_VERSION=\"\" -DPACKAGE_STRING=\"\" -DPACKAGE_BUGREPORT=\"\" -DSTDC_HEADERS=1 -DHAVE_SYS_TYPES_H=1 -DHAVE_SYS_STAT_H=1 -DHAVE_STDLIB_H=1 -DHAVE_STRING_H=1 -DHAVE_MEMORY_H=1 -DHAVE_STRINGS_H=1 -DHAVE_INTTYPES_H=1 -DHAVE_STDINT_H=1 -DHAVE_UNISTD_H=1 -DHAVE_SDL=1 -DHAVE_LIBASOUND=1 -DHAVE_ALSA=1 -DHAVE_SYS_SOUNDCARD_H=1 $(X11INC) -I. -DUNIX -DCPC_LSB_FIRST -Wall -Wno-unused
+CFLAGS = -Ofast -flto -DCPC_NODEBUGGER $(SDLINC) $(ALSAINC) $(PULSEINC) -DPACKAGE_NAME=\"\" -DPACKAGE_TARNAME=\"\" -DPACKAGE_VERSION=\"\" -DPACKAGE_STRING=\"\" -DPACKAGE_BUGREPORT=\"\" -DSTDC_HEADERS=1 -DHAVE_SYS_TYPES_H=1 -DHAVE_SYS_STAT_H=1 -DHAVE_STDLIB_H=1 -DHAVE_STRING_H=1 -DHAVE_MEMORY_H=1 -DHAVE_STRINGS_H=1 -DHAVE_INTTYPES_H=1 -DHAVE_STDINT_H=1 -DHAVE_UNISTD_H=1 -DHAVE_SDL=1 -DHAVE_LIBASOUND=1 -DHAVE_ALSA=1 -DHAVE_SYS_SOUNDCARD_H=1 $(X11INC) -I. -DUNIX -DCPC_LSB_FIRST -Wno-unused
+#CFLAGS = -Wall -g -pg -O2 -DCPC_NODEBUGGER $(SDLINC) $(ALSAINC) $(PULSEINC) -DPACKAGE_NAME=\"\" -DPACKAGE_TARNAME=\"\" -DPACKAGE_VERSION=\"\" -DPACKAGE_STRING=\"\" -DPACKAGE_BUGREPORT=\"\" -DSTDC_HEADERS=1 -DHAVE_SYS_TYPES_H=1 -DHAVE_SYS_STAT_H=1 -DHAVE_STDLIB_H=1 -DHAVE_STRING_H=1 -DHAVE_MEMORY_H=1 -DHAVE_STRINGS_H=1 -DHAVE_INTTYPES_H=1 -DHAVE_STDINT_H=1 -DHAVE_UNISTD_H=1 -DHAVE_SDL=1 -DHAVE_LIBASOUND=1 -DHAVE_ALSA=1 -DHAVE_SYS_SOUNDCARD_H=1 $(X11INC) -I. -DUNIX -DCPC_LSB_FIRST
 #-g3 -pg -dm -dp -a
 #LFLAGS1 =  -lasound -lm -ldl -lpthread $(GTKLIB) $(SDLLIB) $(ALSALIB) $(PULSELIB) $(X11LIBS)
 LFLAGS1 = 
 #LFLAGS1 =  -static $(SDLLIB) $(ALSALIB) $(PULSELIB) -dynamic $(GTKLIB) -lasound -lm -ldl -lpthread $(X11LIBS)
 #debug
-LFLAGS2 = -lasound -lm -ldl -lpthread $(SDLLIB) $(ALSALIB) $(PULSELIB) $(X11LIBS) -pg
+LFLAGS2 = -lSDL_image -lSDL_ttf -ldl $(SDLLIB) $(ALSALIB) $(PULSELIB) $(X11LIBS) -lpthread
 #LFLAGS2= -g3 -pg -dm -dp -a
 #normal
 #LFLAGS2 = -s
@@ -68,15 +72,11 @@ UNIX_O= unix/main.o unix/host.o unix/global.o unix/display.o \
 ROMS_BIN=	roms/amsdose/amsdos.rom,roms/cpc464e/os.rom,roms/cpc464e/basic.rom,roms/cpc664e/os.rom,roms/cpc664e/basic.rom,roms/cpc6128e/os.rom,roms/cpc6128e/basic.rom,roms/cpc6128s/os.rom,roms/cpc6128s/basic.rom,roms/cpcplus/system.cpr,roms/kcc/kccos.rom,roms/kcc/kccbas.rom
 
 arnold:  conditionals roms $(CPC_O) $(UNIX_O)
-	$(BIND) -Wl,-b,binary,$(ROMS_BIN),-b,$(TARGET_FMT) -o arnold $(LFLAGS1) $(CPC_O) \
+	$(BIND) -Wl,-b,binary,$(ROMS_BIN),-b,${TARGET_FMT} -o arnold $(LFLAGS1) $(CPC_O) \
 	$(UNIX_O) $(LFLAGS2)
 
 conditionals:
-ifeq ($(TARGET_CPU),ppc)
-TARGET_FMT=elf32-ppc
-else
-TARGET_FMT=elf32-i386
-endif
+TARGET_FMT=elf32-littlearm
 
 roms:
 	ln -s ../roms .

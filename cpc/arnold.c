@@ -49,8 +49,6 @@ static unsigned int Arnold_PercentRelativeSpeed = 0;
 static BOOL DontRender=FALSE;
 /* current frame index, compared against frame skip value */
 static int CurrentFrameIndex = 0;
-/* frame skip value */
-static int FrameSkip = FRAME_SKIP_MIN;
 /* number of nops executed in this frame so far */
 static int NopCountToDate = NOPS_PER_MONITOR_SCREEN;
 /* TRUE if audio is enabled, FALSE otherwise */
@@ -343,6 +341,7 @@ void	CPCEmulation_Run(void)
 #else
 		NopCount = Debugger_Execute(); 
 #endif
+
 		/* update CPC nop count - used for other hardware */
 		CPC_UpdateNopCount(NopCount);
 

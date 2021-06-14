@@ -27,7 +27,8 @@
 
 //#define USE_ASM 1
 
-SDL_Surface *screen;
+static SDL_Surface *screen;
+extern SDL_Surface *menuSurface;
 BOOL fullscreen = FALSE;	//FIXME
 BOOL toggleFullscreenLater = FALSE;
 int scale = 1;
@@ -52,6 +53,8 @@ void sdl_SetDisplay(int Width, int Height, int Depth, BOOL wantfullscreen) {
 	if ( fullscreen ) mode |= SDL_FULLSCREEN;
 	else mode &= ~SDL_FULLSCREEN;
 	screen = SDL_SetVideoMode(Width, Height, Depth, mode);
+	menuSurface = SDL_CreateRGBSurface(SDL_SWSURFACE, 320, 240, 16, 0, 0, 0, 0);
+
 	if ( screen == NULL ) {
 		fprintf(stderr, Messages[107],
 			Width, Height, Depth, SDL_GetError());
@@ -91,8 +94,10 @@ void sdl_SetDoubled( BOOL doubled ) {
 
 	scale = doubled ? 2 : 1;
 	if ( doubled ) {
-		w = screen->w * 2;
-		h = screen->h * 2;
+		//w = screen->w * 2;
+		//h = screen->h * 2;
+		w = 384;
+		h = 288;
 	} else {
 		w = screen->w / 2;
 		h = screen->h / 2;
@@ -624,7 +629,7 @@ double delta_time()
 	double dt;
 	gettimeofday(&t1,NULL);
 	dt=(t1.tv_sec - t2.tv_sec)+(t1.tv_usec - t2.tv_usec)/1000000.0; /* 1000000 microseconds in a second... */
-	//printf("\ntime: %i %i %i %i delta: %f\n",t1.tv_sec, t2.tv_sec, t1.tv_usec, t2.tv_usec, dt);
+	printf("\ntime: %i %i %i %i delta: %f\n",t1.tv_sec, t2.tv_sec, t1.tv_usec, t2.tv_usec, dt);
 	memcpy( &t2, &t1, sizeof(t2) );
 	return dt;
 }
@@ -651,6 +656,7 @@ void sdl_Throttle(void) {
 	}
 	if (sdl_LockSpeed)
 	{
+
 		static Uint32 next_tick = 0;
 		Uint32 this_tick;
 
@@ -664,7 +670,7 @@ void sdl_Throttle(void) {
 				next_tick = this_tick + (1000/FRAMES_PER_SEC);
 			}
 		}
-		//fprintf(stderr,"(%i %i) ",this_tick,next_tick);
+		//fprintf(stdout,"(%i %i) ",this_tick,next_tick);
 #if 0
 #ifndef BUSYWAIT
 		long delay;
@@ -675,7 +681,6 @@ void sdl_Throttle(void) {
 		/* use this to throttle speed */
 		unsigned long	TimeDifference;
 		unsigned long	Time;
-
 		do
 		{
 			/* get current time */

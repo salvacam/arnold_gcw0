@@ -49,6 +49,8 @@ extern GtkWidget *btn_double;
 #ifdef HAVE_SDL
 extern BOOL toggleFullscreenLater;
 #endif
+char* rom_path;
+
 
 /* Forward declarations */
 void init_main();
@@ -265,6 +267,8 @@ void init_main(int argc, char *argv[]) {
 				break;
 			case 'c':
 				cart = optarg;
+				rom_path = malloc(sizeof(char) * (strlen(optarg)+1));
+				strcpy(rom_path, optarg);
 				break;
 #ifdef HAVE_SDL
 			case 'd':
@@ -430,6 +434,7 @@ void init_main(int argc, char *argv[]) {
 		Host_InitDriveLEDIndicator();
 
 		Render_SetDisplayWindowed();
+		//Render_SetDisplayFullScreen(320, 240, 16);
 
 #ifdef HAVE_SDL
 		if (doubled) {

@@ -38,22 +38,21 @@ static SOUND_PLAYBACK_FORMAT SoundFormat;
 
 long audio_waterlevel;
 
-const int audio_NumberOfChannels = 2;
-//static const int audio_NumberOfChannels = 1;
+//static const int audio_NumberOfChannels = 2;
+static const int audio_NumberOfChannels = 1;
 //static const int audio_BitsPerSample = 16;
 static const int audio_BitsPerSample = 8;
-static const int audio_Frequency = 44100;
-//const int audio_Frequency = 22050;
+//static const int audio_Frequency = 44100;
+static const int audio_Frequency = 22050;
 //const int audio_bufsize = 131072;
 //const int audio_bufsize = 16384;
 //static const int audio_bufsize = 16384;
-static const int audio_bufsize = 8192;
-//static const int audio_bufsize = 4096;
-//const int audio_bufsize = 1024;
+//static const int audio_bufsize = 8192;
+static const int audio_bufsize = 4096;
+//static const int audio_bufsize = 2048;
+//static const int audio_bufsize = 1024;
 //static const int audio_callbacksize = 4096;
-//static const int audio_callbacksize = 1024;
-//static const int audio_callbacksize = 2048;
-static const int audio_callbacksize = AUDIO_WATERMARK/2;
+static const int audio_callbacksize = 512;
 static SDL_AudioSpec audioSpec;
 static BOOL audio_open = FALSE;
 static Uint8 *audio_chunk;
@@ -119,18 +118,6 @@ void	sdl_fill_audio(void *userdata, Uint8 *stream, int len) {
 	//fprintf(stderr,".%x",len);
 	//fprintf(stderr,".%x:%x:%x",(debugcounter+=len),len,
 		//audio_pos-audio_chunk);
-#if 0
-	if ( wav_buffer == NULL ) {
-		SDL_LoadWAV("test.wav", &wav_spec, &wav_buffer, &wav_length);
-		p = wav_buffer;
-	}
-	memcpy(stream, p, len);
-	//if (debugcounter < 0x5000) {
-	if (debugcounter < wav_spec.samples*16*2*2) {
-		fprintf(stderr,"_");
-		p += len;
-	}
-#endif
 	audio_waterlevel -= len;	// FIXME
 	if ( audio_pos + len < audio_chunk + audio_bufsize ) {
 		//memcpy(stream, audio_pos, len);
@@ -149,24 +136,6 @@ void	sdl_fill_audio(void *userdata, Uint8 *stream, int len) {
 		audio_pos = audio_chunk + len - remain;
 		//fprintf(stderr,"'");
 	}
-
-	//memset(stream, 0, len);
-
-#if 0
-	/* Only play if we have data left */
-	if ( audio_len == 0 ) {
-		//return;
-		audio_pos = audio_chunk;
-		audio_len = audio_bufsize;
-		fprintf(stderr,",");
-	}
-	/* Mix as much data as possible */
-	len = ( len > audio_len ? audio_len : len );
-	//SDL_MixAudio(stream, audio_pos, len, SDL_MIX_MAXVOLUME);
-	memcpy(stream, audio_pos, len);
-	audio_pos += len;
-	audio_len -= len;
-#endif
 }
 
 BOOL	sdl_AudioPlaybackPossible(void)
@@ -175,10 +144,10 @@ BOOL	sdl_AudioPlaybackPossible(void)
 	if (audio_open) return TRUE;
 	audioSpec.freq = audio_Frequency;
 	if (audio_BitsPerSample == 16) {
-		audioSpec.format = AUDIO_S16;
+		audioSpec.format = AUDIO_U16SYS;
 	} else {
-		audioSpec.format = AUDIO_S8;
-		samplecpy = halfcpy;
+		audioSpec.format = AUDIO_U8;
+	//	samplecpy = halfcpy;
 	}
 	audioSpec.channels = audio_NumberOfChannels;
 	//audioSpec.samples = audio_BitsPerSample;
@@ -197,7 +166,7 @@ SOUND_PLAYBACK_FORMAT *sdl_GetSoundPlaybackFormat(void)
 	if (!audio_open) sdl_AudioPlaybackPossible();
 	SoundFormat.NumberOfChannels = audioSpec.channels;
 	//SoundFormat.BitsPerSample = audioSpec.samples;
-	if (audioSpec.format == AUDIO_S8) {
+	if (audioSpec.format == AUDIO_U8) {
 		SoundFormat.BitsPerSample = 8;
 	} else {
 		SoundFormat.BitsPerSample = 16;
@@ -216,88 +185,28 @@ AudioBufferSize)
 	//fprintf(stderr,"sdl_LockAudioBuffer %i %i %i %i %i\n",
 		//*pBlock1, *pBlock1Size, *pBlock2, *pBlock2Size, AudioBufferSize);
 	SDL_LockAudio();
-	//fprintf(stderr,"<");
-	/*if (chunk_len != AudioBufferSize) {
-		fprintf(stderr,"?");
-		chunk_len = AudioBufferSize;
-		//chunk_len = audio_bufsize;
-		if (audio_chunk != NULL) free(audio_chunk);
-		audio_chunk = malloc(chunk_len);
-		if (audio_chunk == NULL) {
-			fprintf(stderr,"Error: Unable to allocate %i bytes of memory\n",
-				chunk_len);
-			exit(1);
-		}
-		memset(audio_chunk, 0, chunk_len);
-		*pBlock1 = audio_chunk;
-		*pBlock1Size = chunk_len;
-		*pBlock2 = NULL;
-		*pBlock2Size = 0;
-		audio_pos = audio_chunk;
-		audio_len = chunk_len;
-	} else {
-	}*/
-	//memset(audio_chunk, 0, chunk_len);
-	/**pBlock1 = audio_chunk;
-	*pBlock1Size = audio_bufsize;
-	*pBlock2 = NULL;
-	*pBlock2Size = 0;
-	audio_pos = audio_chunk;
-	audio_len = audio_bufsize;*/
-	/*if((audio_rec - audio_chunk) + AudioBufferSize < audio_bufsize) {
-		fprintf(stderr,"-");
-		*pBlock1 = audio_rec;
-		*pBlock1Size = AudioBufferSize;
-		*pBlock2 = NULL;
-		*pBlock2Size = 0;
-		audio_rec += AudioBufferSize;
-	} else {
-		fprintf(stderr,"+");
-		*pBlock1 = audio_rec;
-		*pBlock1Size = audio_bufsize - (audio_rec - audio_chunk);
-		*pBlock2 = audio_chunk;
-		*pBlock2Size = audio_bufsize;	// FIXME
-		audio_rec = audio_chunk;	// FIXME
-	}*/
 	remain = audio_bufsize - (audio_rec - audio_chunk);
-	//fprintf(stderr,"%i %i",remain,audio_rec - audio_chunk);
-	//fprintf(stderr,"%x %x", AudioBufferSize, audio_rec - audio_chunk);
-	//fprintf(stderr,"%x", (debugcounter+=AudioBufferSize));
-	//fprintf(stderr,"%x:%x:%x", (debugcounter+=AudioBufferSize),
-		//AudioBufferSize,audio_rec - audio_chunk);
 	if(remain > AudioBufferSize) {
-		//fprintf(stderr,"-");
-		//fprintf(stderr,"-(%0x %0x)", audio_rec-audio_chunk, audio_pos-audio_chunk);
-		/*n = 10;
-		while( audio_pos > audio_rec && n-->0 ) {
-			fprintf(stderr,".(%0x %0x)", audio_rec-audio_chunk, audio_pos-audio_chunk);
-			usleep(10);
-		}*/
 		*pBlock1 = audio_rec;
 		*pBlock1Size = AudioBufferSize;
 		*pBlock2 = NULL;
 		*pBlock2Size = 0;
 		audio_rec += AudioBufferSize;
 	} else {
-		//fprintf(stderr,"+");
 		*pBlock1 = audio_rec;
 		*pBlock1Size = remain;
 		*pBlock2 = audio_chunk;
 		*pBlock2Size = AudioBufferSize - remain;
 		audio_rec = audio_chunk + *pBlock2Size;
-		//sleep(10);
 	}
 	audio_waterlevel += AudioBufferSize;		// FIXME
-	//fprintf(stderr," %i ", audio_waterlevel);	// FIXME
 	//usleep(10);
 	return TRUE;
 }
 
 void	sdl_UnLockAudioBuffer(void)
 {
-	//fprintf(stderr,">");
 	SDL_UnlockAudio();
-	//fprintf(stderr,"sdl_UnLockAudioBuffer\n");
 }
 
 #endif	/* HAVE_SDL */

@@ -59,4 +59,3 @@ BOOL	LoadFile(const char *, char **, unsigned long *);
 BOOL	SaveFile(const char *,char *,unsigned long);
 
 #endif
-

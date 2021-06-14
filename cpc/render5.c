@@ -1462,6 +1462,7 @@ void    Render_DumpDisplay(void)
 
 void    Render_Initialise(void)
 {
+	puts("Render_Initialise START");
         CPC_BuildModeRenderTables();
 
 	pScreenBase = NULL;
@@ -1471,6 +1472,7 @@ void    Render_Initialise(void)
 	Palette_Initialise();
 
 	Render_SetRenderingAccuracyForWindowedMode(RENDERING_ACCURACY_LOW);
+	puts("Render_Initialise END");
 }
 
   
@@ -1645,6 +1647,7 @@ BOOL	Render_IsRenderActive(void)
 
 BOOL Render_SetDisplayFullScreen(int Width, int Height, int Depth)
 {
+	puts("Render_SetDisplayFullScreen START");
         
         /* not recommended for any res as low as 320x240 */
  
@@ -1692,17 +1695,22 @@ BOOL Render_SetDisplayFullScreen(int Width, int Height, int Depth)
         }
 
         return FALSE;
+    	puts("Render_SetDisplayFullScreen END");
 }
 
 
 BOOL    Render_SetDisplayWindowed(void)
 {
+	puts("Render_SetDisplayWindowed START");
         int ScreenWidth, ScreenHeight;
 
         Render_SetRenderingAccuracy(Render_RenderingAccuracyForWindowedMode);
 
-        ScreenWidth = (X_CRTC_CHAR_WIDTH<<(1+3))>>PIXEL_STEP_SHIFT;     
-        ScreenHeight = (Y_CRTC_LINE_HEIGHT);
+        //ScreenWidth = (X_CRTC_CHAR_WIDTH<<(1+3))>>PIXEL_STEP_SHIFT;
+        //ScreenHeight = (Y_CRTC_LINE_HEIGHT);
+
+        ScreenWidth = 320;
+        ScreenHeight = 240;
 
         /* adjust height for scanlines */
         if (ScanLines)
@@ -1748,6 +1756,7 @@ BOOL    Render_SetDisplayWindowed(void)
         }
 
         return FALSE;
+    	puts("Render_SetDisplayWindowed END");
 }
 
 

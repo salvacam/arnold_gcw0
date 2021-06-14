@@ -22,6 +22,9 @@
 
 #include "cpcglob.h"
 
+/* frame skip value */
+static int FrameSkip = FRAME_SKIP_MIN;
+
 void	CPCEmulation_Finish(void);
 void	CPCEmulation_Run(void);
 void	CPC_SetFrameSkip(int);

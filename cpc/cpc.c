@@ -1549,8 +1549,6 @@ int     CPC_GetMonitorBrightness(void)
 
 /*-----------------------------------------------------------------------*/
 
-static int CurrentCRTCType;
-
 /* set the CRTC emulation type */
 void    CPC_SetCRTCType(unsigned int Type)
 {
