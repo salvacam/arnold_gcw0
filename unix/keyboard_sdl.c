@@ -704,7 +704,9 @@ BOOL sdl_ProcessSystemEvents() {
 		case SDL_KEYUP: {
 			switch (event.key.keysym.sym) {
 			case SDLK_ESCAPE:	// menu button on Trimui
-			/*
+				#ifdef MIYOO_MODE
+				return TRUE;
+				#else
 				mmenu = dlopen("libmmenu.so", RTLD_LAZY);
 
 				if (mmenu) {
@@ -749,10 +751,10 @@ BOOL sdl_ProcessSystemEvents() {
 
 					}
 					SDL_PauseAudio(0);
-				} else {
-					*/
+				} else {	
 					return TRUE;
-				//}
+				}
+				#endif	
 				break;
 			default:
 				break;
