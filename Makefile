@@ -1,7 +1,13 @@
 # Makefile for Arnold
 
 #CC = gcc
-CC = /opt/trimui-toolchain/bin/arm-buildroot-linux-gnueabi-gcc
+
+TOOLCHAIN = /opt/miyoo/usr
+
+#EXESUFFIX = .dge
+CC = $(TOOLCHAIN)/bin/arm-linux-gcc
+
+#CC = /opt/trimui-toolchain/bin/arm-buildroot-linux-gnueabi-gcc
 BIND = $(CC)
 #   CFLAGS    flags for C compile
 #   LFLAGS1   flags after output file spec, before obj file list

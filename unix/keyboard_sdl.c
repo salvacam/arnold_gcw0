@@ -24,7 +24,7 @@
 #include "../cpc/arnold.h"
 #include "../cpc/cpc.h"
 #include <dlfcn.h>
-#include <mmenu.h>
+//#include <mmenu.h>
 #include <SDL/SDL.h>
 
 // table to map KeySym values to CPC Key values
@@ -704,6 +704,7 @@ BOOL sdl_ProcessSystemEvents() {
 		case SDL_KEYUP: {
 			switch (event.key.keysym.sym) {
 			case SDLK_ESCAPE:	// menu button on Trimui
+			/*
 				mmenu = dlopen("libmmenu.so", RTLD_LAZY);
 
 				if (mmenu) {
@@ -749,8 +750,9 @@ BOOL sdl_ProcessSystemEvents() {
 					}
 					SDL_PauseAudio(0);
 				} else {
+					*/
 					return TRUE;
-				}
+				//}
 				break;
 			default:
 				break;
