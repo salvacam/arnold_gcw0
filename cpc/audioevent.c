@@ -164,7 +164,7 @@ void    Audio_Init(int newFrequency, int newBitsPerSample, int newNoOfChannels)
         BitsPerSample = newBitsPerSample;
         NoOfChannels = newNoOfChannels;
 
-        ScreenRefreshFrequency = 50.08f;
+        ScreenRefreshFrequency = 50.00f;
 	
         /* no of samples per screen refresh */
         SamplesPerScreen = (float)SampleRate/(float)ScreenRefreshFrequency;

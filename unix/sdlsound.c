@@ -38,21 +38,21 @@ static SOUND_PLAYBACK_FORMAT SoundFormat;
 
 long audio_waterlevel;
 
-//static const int audio_NumberOfChannels = 2;
-static const int audio_NumberOfChannels = 1;
+static const int audio_NumberOfChannels = 2;
+//static const int audio_NumberOfChannels = 1;
 //static const int audio_BitsPerSample = 16;
 static const int audio_BitsPerSample = 8;
-//static const int audio_Frequency = 44100;
-static const int audio_Frequency = 22050;
-//const int audio_bufsize = 131072;
-//const int audio_bufsize = 16384;
-//static const int audio_bufsize = 16384;
+static const int audio_Frequency = 44100;
+//static const int audio_Frequency = 22050;
+//static const int audio_bufsize = 262144;
 //static const int audio_bufsize = 8192;
-static const int audio_bufsize = 4096;
+//static const int audio_bufsize = 4096;
 //static const int audio_bufsize = 2048;
 //static const int audio_bufsize = 1024;
 //static const int audio_callbacksize = 4096;
-static const int audio_callbacksize = 512;
+//static const int audio_callbacksize = 512;
+static const int audio_callbacksize = 1024;
+static const int audio_bufsize = 1024 * 4 * 8;
 static SDL_AudioSpec audioSpec;
 static BOOL audio_open = FALSE;
 static Uint8 *audio_chunk;
@@ -74,8 +74,11 @@ BOOL	sdl_open_audio(SDL_AudioSpec *audioSpec) {
 	}
 	fprintf(stderr, "Opened Audio device: %i/%0x/%i\n",
 		audioSpec->freq, audioSpec->format, audioSpec->samples);
+
 	if (audio_chunk != NULL) free(audio_chunk);
-	audio_chunk = malloc(audio_bufsize);
+
+	audio_chunk = (Uint8 *) malloc(audio_bufsize);
+
 	if (audio_chunk == NULL) {
 		fprintf(stderr,Messages[83],
 			audio_bufsize);
@@ -84,7 +87,6 @@ BOOL	sdl_open_audio(SDL_AudioSpec *audioSpec) {
 	memset(audio_chunk, 0, audio_bufsize);
 	audio_pos = audio_chunk;
 	audio_rec = audio_chunk;
-	audio_len = audio_bufsize;
 	audio_waterlevel = 0;
 	SDL_PauseAudio(0);
 	audio_open = TRUE;
@@ -112,13 +114,13 @@ void	sdl_fill_audio(void *userdata, Uint8 *stream, int len) {
 	//static Uint32 wav_length;
 	//static Uint8 *wav_buffer = NULL;
 	//static Uint8 *p = NULL;
-	int i, j;
+	//int i, j;
 	int remain;
 	//fprintf(stderr,"sdl_fill_audio()\n");
 	//fprintf(stderr,".%x",len);
 	//fprintf(stderr,".%x:%x:%x",(debugcounter+=len),len,
 		//audio_pos-audio_chunk);
-	audio_waterlevel -= len;	// FIXME
+	//audio_waterlevel -= len;	// FIXME
 	if ( audio_pos + len < audio_chunk + audio_bufsize ) {
 		//memcpy(stream, audio_pos, len);
 		//halfcpy(stream, audio_pos, len);
@@ -181,11 +183,11 @@ AudioBufferSize)
 {	
 	static int debugcounter = 0;
 	int remain;
-	int n;
 	//fprintf(stderr,"sdl_LockAudioBuffer %i %i %i %i %i\n",
 		//*pBlock1, *pBlock1Size, *pBlock2, *pBlock2Size, AudioBufferSize);
 	SDL_LockAudio();
 	remain = audio_bufsize - (audio_rec - audio_chunk);
+
 	if(remain > AudioBufferSize) {
 		*pBlock1 = audio_rec;
 		*pBlock1Size = AudioBufferSize;
@@ -199,7 +201,7 @@ AudioBufferSize)
 		*pBlock2Size = AudioBufferSize - remain;
 		audio_rec = audio_chunk + *pBlock2Size;
 	}
-	audio_waterlevel += AudioBufferSize;		// FIXME
+	//audio_waterlevel += AudioBufferSize;		// FIXME
 	//usleep(10);
 	return TRUE;
 }
