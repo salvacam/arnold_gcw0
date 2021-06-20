@@ -1,0 +1,62 @@
+Pre-requisites
+-------------------------
+- Docker up & running
+- ADB 
+
+Install Trimui toolchain
+-------------------------
+Get the Trimui toolchain at https://git.crowdedwood.com/trimui-toolchain/
+Follow the readme installation step
+
+Clone Arnold sources
+-------------------------
+Get Arnold for Trimui at https://github.com/liartes/arnold_gcw0
+
+Clone libmmenu sources
+-------------------------
+Get libmmenu at https://github.com/shauninman/libmmenu
+
+Build libmmenu
+-------------------------
+In the libmmenu source folder, using the Docker toolchain command-line execute
+	ToolChainShell> make clean && make
+
+Build Arnold
+-------------------------
+In the Arnold source folder, using the Docker toolchain command-line execute
+	ToolChainShell> make clean && make
+
+BONUS : debug on Trimui with adb + GDB
+-------------------------
+Using commander app on the Trimui, copy the /etc/init.d/rc.final to the SDCARD
+On a computer, add the following line to the file, right before the /etc/init.d/main & line
+	/etc/init.d/adbd start & to /etc/init.d/rc.final 
+
+Using commander app again, replace the /etc/init.d/rc.final with the modified rc.final file.
+
+reboot the Trimui device, adb service should be running
+
+Connect the Trimui device to the computer with a USB data cable
+
+Check that adb service is running alright with commande
+	HostCommandLine> adb devices
+	
+if a device shows up, you can get a shell access into the trimui with
+	HostCommandLine> adb shell
+	
+You can copy files directly using your host command line with
+	HostCommandLine> adb push /path/to/SOURCE_FILE /path/to/destination/	
+
+Transfer GDB executable on the Trimui using adb
+	HostCommandLine> adb push gdb /mnt/SDCARD/Emus/GX4000.pak/
+
+Now, back to the adb shell on the Trimui :
+	
+GDB need a path variable in order to find the libraries, execute command 
+	TrimuiShell> export LD_LIBRARY_PATH="/usr/trimui/lib"
+	
+You can start Arnold directly with GDB
+	TrimuiShell> ./gdb --args "./arnold" "-cart" "/mnt/SDCARD/Roms/GX4000/ROM_FILE"
+	
+Or run Arnold on the Trimui, then bind GDB with the PID of the process
+	TrimuiShell> ./gdb -p PID
