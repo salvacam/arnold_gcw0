@@ -291,6 +291,7 @@ void	CPC_UpdateAudio(void)
 
 
 extern unsigned char *pAudioBuffer;
+static int p_audio_pos = 0;
 extern unsigned int AudioBufferSize;
 
 void	CPC_UpdateAudio(void)
@@ -307,11 +308,9 @@ void	CPC_UpdateAudio(void)
 		if (AudioActiveFlag)
 		{
 			/* update sound buffer with events in audio events buffer */
-			NopsReached = AudioEvent_TraverseAudioEventsAndBuildSampleData(CPCNopCount,19968);
+			p_audio_pos = AudioEvent_TraverseAudioEventsAndBuildSampleData(CPCNopCount,19968, p_audio_pos);
 		}
 
-		/* restart buffer ready to fill with new data */
-		AudioEvent_RestartEventBuffer(NopsReached);
 	}
 }
 

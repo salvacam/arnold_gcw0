@@ -698,7 +698,6 @@ void sdl_Throttle(void) {
 #endif
 
 	}
-
 	CPC_UpdateAudio();
 	sdl_HandleMouse(NULL);
 }
