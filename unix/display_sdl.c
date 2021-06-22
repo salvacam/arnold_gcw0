@@ -94,10 +94,8 @@ void sdl_SetDoubled( BOOL doubled ) {
 
 	scale = doubled ? 2 : 1;
 	if ( doubled ) {
-		//w = screen->w * 2;
-		//h = screen->h * 2;
-		w = 384;
-		h = 288;
+		w = screen->w * 2;
+		h = screen->h * 2;
 	} else {
 		w = screen->w / 2;
 		h = screen->h / 2;
@@ -658,8 +656,6 @@ void sdl_Throttle(void) {
 	}
 	if (sdl_LockSpeed)
 	{
-
-		if (!sound_throttle()) {
 			/* Wait for the next frame */
 			Uint32 this_tick = SDL_GetTicks();
 			if ( this_tick < next_tick ) {
@@ -668,7 +664,6 @@ void sdl_Throttle(void) {
 			} else {
 				next_tick = this_tick + (1000/FRAMES_PER_SEC);
 			}
-		}
 		//fprintf(stdout,"(%i %i) ",this_tick,next_tick);
 #if 0
 #ifndef BUSYWAIT
@@ -677,8 +672,6 @@ void sdl_Throttle(void) {
 		if (delay>0 && audio_waterlevel > AUDIO_WATERMARK )
 			usleep(delay);	// FIXME*/
 #else
-
-#if 0
 		/* use this to throttle speed */
 		unsigned long	TimeDifference;
 		unsigned long	Time;
@@ -695,7 +688,6 @@ void sdl_Throttle(void) {
 		TimeError = (TimeDifference - (1000/50)) % (1000/50);
 
 		PreviousTime = Time;
-#endif
 
 #endif
 #endif

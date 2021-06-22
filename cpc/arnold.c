@@ -269,44 +269,22 @@ void	CPC_ResetTiming(void)
 
 extern unsigned char *pAudioBuffer;
 extern unsigned int AudioBufferSize;
-#if 0
-void	CPC_UpdateAudio(void)
-{
-	int CPCNopCount = CPC_GetNopCount();
-	int NopsReached = CPCNopCount;
-
-	if (AudioActiveFlag)
-	{
-		/* update sound buffer with events in audio events buffer */
-		AudioEvent_TraverseAudioEventsAndBuildSampleData();
-	
-		/* convert PSG vol/Digiblaster data to sample data */
-		AudioEvent_ConvertToOutputFormat();
-	}
-
-	/* restart buffer ready to fill with new data */
-	AudioEvent_RestartEventBuffer();
-}
-#endif
-
-
 extern unsigned char *pAudioBuffer;
 static int p_audio_pos = 0;
+static int Cycles = 0;
 extern unsigned int AudioBufferSize;
 
 void	CPC_UpdateAudio(void)
 {
-	if (AudioActiveFlag)
-	{
-		Digiblaster_EndFrame();
-	}
 
 	{
 		int CPCNopCount = CPC_GetNopCount();
 		int NopsReached = CPCNopCount;
 
-		if (AudioActiveFlag)
+		if (AudioActiveFlag && Cycles >= 19968)
 		{
+			Cycles -= 19968;
+			//Digiblaster_EndFrame();
 			/* update sound buffer with events in audio events buffer */
 			p_audio_pos = AudioEvent_TraverseAudioEventsAndBuildSampleData(CPCNopCount,19968, p_audio_pos);
 		}
@@ -337,6 +315,7 @@ void	CPCEmulation_Run(void)
 #else
 		NopCount = Debugger_Execute(); 
 #endif
+		Cycles += NopCount;
 
 		/* update CPC nop count - used for other hardware */
 		CPC_UpdateNopCount(NopCount);
