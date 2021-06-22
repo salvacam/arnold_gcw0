@@ -833,9 +833,9 @@ int     AudioEvent_TraverseAudioEventsAndBuildSampleData(int CPCNopCount, int No
 
 		// buffer is not filled enough, return current position for next cycle
 		// 3528
-		if(BufferFullness < 3528) {
+		/*if(BufferFullness < 3528) {
 			return BufferFullness;
-		}
+		}*/
 
 		switch (AudioEvent_SampleBits)
 		{

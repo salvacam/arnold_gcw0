@@ -649,6 +649,8 @@ int sdl_LockSpeed = TRUE;
 //unsigned long TimeError = 0;
 //#endif
 
+static Uint32 next_tick = 0;
+
 void sdl_Throttle(void) {
 	if (toggleFullscreenLater) {
 		toggleFullscreenLater = FALSE;
@@ -657,12 +659,9 @@ void sdl_Throttle(void) {
 	if (sdl_LockSpeed)
 	{
 
-		static Uint32 next_tick = 0;
-		Uint32 this_tick;
-
 		if (!sound_throttle()) {
 			/* Wait for the next frame */
-			this_tick = SDL_GetTicks();
+			Uint32 this_tick = SDL_GetTicks();
 			if ( this_tick < next_tick ) {
 				SDL_Delay(next_tick-this_tick);
 				next_tick = next_tick + (1000/FRAMES_PER_SEC);
@@ -678,6 +677,8 @@ void sdl_Throttle(void) {
 		if (delay>0 && audio_waterlevel > AUDIO_WATERMARK )
 			usleep(delay);	// FIXME*/
 #else
+
+#if 0
 		/* use this to throttle speed */
 		unsigned long	TimeDifference;
 		unsigned long	Time;
@@ -694,6 +695,8 @@ void sdl_Throttle(void) {
 		TimeError = (TimeDifference - (1000/50)) % (1000/50);
 
 		PreviousTime = Time;
+#endif
+
 #endif
 #endif
 
