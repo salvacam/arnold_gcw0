@@ -164,7 +164,7 @@ void    Audio_Init(int newFrequency, int newBitsPerSample, int newNoOfChannels)
         BitsPerSample = newBitsPerSample;
         NoOfChannels = newNoOfChannels;
 
-        ScreenRefreshFrequency = 50.08f;
+        ScreenRefreshFrequency = 50.00f;
 	
         /* no of samples per screen refresh */
         SamplesPerScreen = (float)SampleRate/(float)ScreenRefreshFrequency;
@@ -700,16 +700,16 @@ void	AudioEvent_ConvertToOutputFormat(void)
 unsigned long AudioEvent_PreviousFraction = 0;
 
 /* go through all events and build sample data */
-int     AudioEvent_TraverseAudioEventsAndBuildSampleData(int CPCNopCount, int NopsPerFrameUpdate)
+int     AudioEvent_TraverseAudioEventsAndBuildSampleData(int CPCNopCount, int NopsPerFrameUpdate, int p_audio_pos)
 {
         int i;
 /*        int EventBufferNopEnd; */
-
+        int BufferFullness;
         
         {
         AUDIO_EVENT *pCurrentEvent = (AUDIO_EVENT *)pEventBuffer;
 
-        unsigned char *pAudioPtr = pAudioBuffer2;
+        unsigned char *pAudioPtr = pAudioBuffer2 + p_audio_pos;
 
         int EventCount = NoOfEventsInBuffer;
         int NopOffset;
@@ -822,7 +822,8 @@ int     AudioEvent_TraverseAudioEventsAndBuildSampleData(int CPCNopCount, int No
 			
 				pAudioPtr = (char *)AudioEvent_UpdateCycle(pAudioPtr);
             
-				NopCount.FixedPoint.L += NopsPerSampleScaled.FixedPoint.L;    
+				NopCount.FixedPoint.L += NopsPerSampleScaled.FixedPoint.L;
+				BufferFullness = pAudioPtr - pAudioBuffer2;
 			}
 		}
 
@@ -830,7 +831,11 @@ int     AudioEvent_TraverseAudioEventsAndBuildSampleData(int CPCNopCount, int No
 
 		AudioEvent_PreviousFraction = NopCount.FixedPoint.L & 0x0ffff;
 
-
+		// buffer is not filled enough, return current position for next cycle
+		// 3528
+		/*if(BufferFullness < 3528) {
+			return BufferFullness;
+		}*/
 
 		switch (AudioEvent_SampleBits)
 		{
@@ -889,7 +894,7 @@ int     AudioEvent_TraverseAudioEventsAndBuildSampleData(int CPCNopCount, int No
 		/* empty event buffer ready for next re-fill */
 		AudioEvent_RestartEventBuffer(CPCNopCount);
 
-        return CPCNopCount;
+        return 0;
 }
 
 

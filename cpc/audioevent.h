@@ -63,7 +63,7 @@ void	AudioEvent_Initialise(void);
 void	AudioEvent_Finish(void);
 
 //void	AudioEvent_TraverseAudioEventsDebug(DEBUG_HANDLE DebugHandle);
-int		AudioEvent_TraverseAudioEventsAndBuildSampleData(int,int);
+int		AudioEvent_TraverseAudioEventsAndBuildSampleData(int,int,int);
 void	AudioEvent_SetFormat(int SampleRate, int SampleBits, int SampleChannels);
 
 void	Audio_Reset(void);

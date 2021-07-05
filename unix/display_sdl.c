@@ -94,10 +94,8 @@ void sdl_SetDoubled( BOOL doubled ) {
 
 	scale = doubled ? 2 : 1;
 	if ( doubled ) {
-		//w = screen->w * 2;
-		//h = screen->h * 2;
-		w = 384;
-		h = 288;
+		w = screen->w * 2;
+		h = screen->h * 2;
 	} else {
 		w = screen->w / 2;
 		h = screen->h / 2;
@@ -649,6 +647,8 @@ int sdl_LockSpeed = TRUE;
 //unsigned long TimeError = 0;
 //#endif
 
+static Uint32 next_tick = 0;
+
 void sdl_Throttle(void) {
 	if (toggleFullscreenLater) {
 		toggleFullscreenLater = FALSE;
@@ -656,20 +656,14 @@ void sdl_Throttle(void) {
 	}
 	if (sdl_LockSpeed)
 	{
-
-		static Uint32 next_tick = 0;
-		Uint32 this_tick;
-
-		if (!sound_throttle()) {
 			/* Wait for the next frame */
-			this_tick = SDL_GetTicks();
+			Uint32 this_tick = SDL_GetTicks();
 			if ( this_tick < next_tick ) {
 				SDL_Delay(next_tick-this_tick);
 				next_tick = next_tick + (1000/FRAMES_PER_SEC);
 			} else {
 				next_tick = this_tick + (1000/FRAMES_PER_SEC);
 			}
-		}
 		//fprintf(stdout,"(%i %i) ",this_tick,next_tick);
 #if 0
 #ifndef BUSYWAIT
@@ -694,11 +688,11 @@ void sdl_Throttle(void) {
 		TimeError = (TimeDifference - (1000/50)) % (1000/50);
 
 		PreviousTime = Time;
+
 #endif
 #endif
 
 	}
-
 	CPC_UpdateAudio();
 	sdl_HandleMouse(NULL);
 }
